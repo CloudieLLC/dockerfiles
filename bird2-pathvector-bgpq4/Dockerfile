@@ -54,7 +54,8 @@ RUN rm -rf /root/bird-2.0.11
 
 RUN rm -rf /var/lib/apt/lists/*
 
-COPY dockerfiles/bird2-/pathvector/bgpq4/root/ /root/
+RUN echo "[ $BIRD_ENABLE ] && { sleep 5; pathvector generate; sleep 5; bird -c /usr/local/etc/bird.conf -d & }" > /root/run.sh
+RUN echo "tail -f /dev/null" >> /root/run.sh
 
 RUN chmod +x /root/run.sh
 
