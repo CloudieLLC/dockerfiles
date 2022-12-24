@@ -1,4 +1,5 @@
 FROM debian:bullseye-slim
+LABEL name="BirdVector-Docker"
 LABEL version="alpha"
 
 RUN apt-get update && apt-get install -y \
@@ -19,9 +20,7 @@ RUN apt-get update && apt-get install -y \
     automake \
     markdown \
     dos2unix \
-    unzip  && \
-    apt-get autoremove -y && \
-    rm -rf /var/lib/apt/lists/*
+    unzip 
 
 RUN curl https://repo.pathvector.io/pgp.asc > /usr/share/keyrings/pathvector.asc
 RUN echo "deb [signed-by=/usr/share/keyrings/pathvector.asc] https://repo.pathvector.io/apt/ stable main" > /etc/apt/sources.list.d/pathvector.list
@@ -30,15 +29,16 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends \
     pathvector && \
     apt-get autoremove -y && \
+    apt-get clean -y \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /root
-RUN curl -O -L ftp://bird.network.cz/pub/bird/bird-2.0.10.tar.gz
-RUN tar -xvzf bird-2.0.10.tar.gz
+RUN curl -O -L ftp://bird.network.cz/pub/bird/bird-2.0.11.tar.gz
+RUN tar -xvzf bird-2.0.11.tar.gz
 
 RUN mkdir /etc/bird
 
-RUN cd bird-2.0.10 && \
+RUN cd bird-2.0.11 && \
     autoreconf && \
     ./configure && \
     make && \
@@ -51,10 +51,12 @@ RUN ./bootstrap
 RUN ./configure
 RUN make install
 
-RUN rm -rf /root/bird-2.0.10
+RUN rm -rf /root/bird-2.0.11
 
 COPY dockerfiles/bird2-/pathvector/bgpq4/root/ /root/
 
 RUN chmod +x /root/run.sh
 
 CMD /root/run.sh
+
+EXPOSE 179
