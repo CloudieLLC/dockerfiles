@@ -29,8 +29,7 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends \
     pathvector && \
     apt-get autoremove -y && \
-    apt-get clean -y \
-    rm -rf /var/lib/apt/lists/*
+    apt-get clean -y 
 
 WORKDIR /root
 RUN curl -O -L ftp://bird.network.cz/pub/bird/bird-2.0.11.tar.gz
@@ -52,6 +51,8 @@ RUN ./configure
 RUN make install
 
 RUN rm -rf /root/bird-2.0.11
+
+RUN rm -rf /var/lib/apt/lists/*
 
 COPY dockerfiles/bird2-/pathvector/bgpq4/root/ /root/
 
